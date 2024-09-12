@@ -7,9 +7,7 @@ import { getCommandKeys } from '../utils/getLocalizedKeys.js'
 
 export class HelpCommand extends Command {
   public constructor (context: Command.LoaderContext, options: Command.Options) {
-    super(context, {
-      ...options
-    })
+    super(context, options)
   }
 
   public override registerApplicationCommands (registry: Command.Registry) {
@@ -29,7 +27,7 @@ export class HelpCommand extends Command {
       .setTitle(client.user.username)
       .setDescription(t('commands:help.description', {
         add_command: chatInputApplicationCommandMention('announcements add', announcementsCommandId),
-        add_translation_command: chatInputApplicationCommandMention('announcements add_translation', announcementsCommandId),
+        add_translation_command: chatInputApplicationCommandMention('announcements add-translation', announcementsCommandId),
         publish_command: chatInputApplicationCommandMention('announcements publish', announcementsCommandId),
         username: client.user.username
       }))
