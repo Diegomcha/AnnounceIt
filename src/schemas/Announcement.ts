@@ -16,18 +16,23 @@ export interface AnnouncementType {
   url?: string
   image?: string
   thumbnail?: string
-  translations: [
-    {
-      _id?: mongoose.ObjectId
-      lang: string
-      title?: string
-      description: string
-      footer?: string
-      url?: string
-      image?: string
-      thumbnail?: string
-    }
-  ]
+  fields?: {
+    _id?: mongoose.ObjectId
+    name: string
+    value: string
+    // inline?: boolean
+  }[]
+  translations:
+  {
+    _id?: mongoose.ObjectId
+    lang: string
+    title?: string
+    description: string
+    footer?: string
+    url?: string
+    image?: string
+    thumbnail?: string
+  }[]
 }
 
 const AnnouncementSchema = new mongoose.Schema<AnnouncementType>({
@@ -41,6 +46,13 @@ const AnnouncementSchema = new mongoose.Schema<AnnouncementType>({
   url: { type: String, required: false, match: URLRegex },
   image: { type: String, required: false },
   thumbnail: { type: String, required: false },
+  fields: [
+    {
+      name: { type: String, required: true, maxlength: EmbedLimits.MaximumFieldNameLength },
+      value: { type: String, required: true, maxlength: EmbedLimits.MaximumFieldValueLength }
+      // inline: { type: Boolean, required: false, default: false }
+    }
+  ],
   translations: [
     {
       lang: { type: String, required: true },
