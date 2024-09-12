@@ -15,6 +15,10 @@ const buildAnnouncementEmbed = (announcement: AnnouncementType) => {
   if (announcement.url && announcement.title) embed.setURL(announcement.url)
   if (announcement.image) embed.setImage(announcement.image)
   if (announcement.thumbnail) embed.setThumbnail(announcement.thumbnail)
+  if (announcement.fields)
+    // Without the map it doenst work i have no idea wtf
+    embed.addFields(...announcement.fields.map((f) => ({ name: f.name, value: f.value })))
+
   return embed
 }
 

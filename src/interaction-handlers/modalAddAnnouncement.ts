@@ -1,10 +1,12 @@
+import { ActionRowBuilder } from '@discordjs/builders'
 import { EmbedLimits, TextInputLimits } from '@sapphire/discord-utilities'
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework'
 import { colord, extend } from 'colord'
 import namesPlugin from 'colord/plugins/names'
-import type { ModalSubmitInteraction } from 'discord.js'
+import { ButtonBuilder, ButtonStyle, type ModalSubmitInteraction } from 'discord.js'
 import ow from 'ow'
 import { Announcement } from '../schemas/Announcement.js'
+import { buildAnnouncementEmbed } from '../utils/buildAnnouncement.js'
 import hasValidColorFormat from '../utils/colorValidation.js'
 import { temporaryImgStorage } from '../utils/Globals.js'
 import { reply } from '../utils/reply.js'
@@ -45,7 +47,7 @@ export class ModalHandler extends InteractionHandler {
     const { description, footer, t, title, url } = options
     let { color } = options
     const name = interaction.customId.split(':').at(-1)
-    const pastInteractionId = interaction.customId.split(':').at(1)!
+    const pastInteractionId = interaction.customId.split(':')[1]
     color &&= colord(color).toHex()
 
     const images = temporaryImgStorage.get(pastInteractionId)
@@ -65,8 +67,17 @@ export class ModalHandler extends InteractionHandler {
     await announcement.save()
     temporaryImgStorage.delete(pastInteractionId)
 
-    return await reply(interaction, {
+    await reply(interaction, {
+      components: [new ActionRowBuilder<ButtonBuilder>().addComponents(
+        new ButtonBuilder()
+          .setCustomId(`addField:${name}`) // TODO: change custom id to include more info
+          .setEmoji('➕') // TODO: Change emoji to a custom one
+          .setLabel(t('commands:addField.button'))
+          .setStyle(ButtonStyle.Success)
+      )],
+      // TODO: Change text to reflect that the next embed is the announcement preview
       content: t('commands:add.done'),
+      embeds: [buildAnnouncementEmbed(announcement)],
       type: 'positive'
     })
   }
